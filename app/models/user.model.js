@@ -38,6 +38,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       allowNull: false,
     },
+    isCourier: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return User;
