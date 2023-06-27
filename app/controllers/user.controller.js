@@ -61,6 +61,7 @@ exports.create = async (req, res) => {
           address: req.body.address,
           phoneNumber: req.body.phoneNumber,
           isAdmin: req.body.isAdmin,
+          isCashier: req.body.isCashier,
         };
 
         // Save User in the database
@@ -106,8 +107,10 @@ exports.create = async (req, res) => {
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const id = req.query.id;
-  var condition = id ? { id: { [Op.like]: `%${id}%` } } : null;
+  const type = req.query.type;
+  if(type == 'cashiers'){
+    var condition = type ? { isCashier: { [Op.eq]: 1 } } : null;
+  }
 
   User.findAll({ where: condition })
     .then((data) => {
@@ -152,6 +155,7 @@ exports.findByEmail = (req, res) => {
   })
     .then((data) => {
       if (data) {
+        console.log(req.body.password);
         res.send(data);
       } else {
         res.send({ email: "not found" });
@@ -168,8 +172,20 @@ exports.findByEmail = (req, res) => {
 };
 
 // Update a User by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   const id = req.params.id;
+  console.log(req.body);
+  if(typeof req.body.password == "string"){
+    let salt = await getSalt();
+    let hash = await hashPassword(req.body.password, salt);
+    req.body.password = hash;
+    req.body.salt = salt;
+  }else{
+    let tempUser = await User.findByPk(id);
+    req.body.password = tempUser.dataValues.password;
+    req.body.salt = tempUser.dataValues.salt;
+    console.log(req.body);
+  }
 
   User.update(req.body, {
     where: { id: id },

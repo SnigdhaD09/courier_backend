@@ -33,14 +33,17 @@ module.exports = (sequelize, Sequelize) => {
     isAdmin: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
+      defaultValue: 0,
     },
     isCashier: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
+      defaultValue: 0,
     },
     isCourier: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
+      defaultValue: 0,
     },
   });
 
