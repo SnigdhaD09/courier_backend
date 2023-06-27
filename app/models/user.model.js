@@ -34,6 +34,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       allowNull: false,
     },
+    isCashier: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
   });
 
   return User;
