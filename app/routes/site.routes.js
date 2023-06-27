@@ -21,5 +21,5 @@ module.exports = (app) => {
   // Delete all sites
   router.delete("/sites/", [authenticateRoute], Site.deleteAll);
 
-  app.use("/travelapi", router);
+  app.use("/courierapi", router);
 };

@@ -21,6 +21,6 @@ module.exports = (app) => {
     // Delete all days
     router.delete("/trips/:tripId/days/", [authenticateRoute], Day.deleteAll);
   
-    app.use("/travelapi", router);
+    app.use("/courierapi", router);
   };
   
