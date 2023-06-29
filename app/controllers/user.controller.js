@@ -62,6 +62,7 @@ exports.create = async (req, res) => {
           phoneNumber: req.body.phoneNumber,
           isAdmin: req.body.isAdmin,
           isCashier: req.body.isCashier,
+          isCourier: req.body.isCourier,
         };
 
         // Save User in the database
@@ -110,6 +111,9 @@ exports.findAll = (req, res) => {
   const type = req.query.type;
   if(type == 'cashiers'){
     var condition = type ? { isCashier: { [Op.eq]: 1 } } : null;
+  }
+  if(type == 'couriers'){
+    var condition = type ? { isCourier: { [Op.eq]: 1 } } : null;
   }
 
   User.findAll({ where: condition })
