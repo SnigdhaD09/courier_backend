@@ -22,7 +22,7 @@ db.daysite = require("./daysite.model.js")(sequelize, Sequelize);
 db.hotel = require("./hotel.model.js")(sequelize, Sequelize);
 db.registration = require("./registration.model.js")(sequelize, Sequelize);
 db.favorite = require("./favorite.model.js")(sequelize, Sequelize);
-db.site = require("./site.model.js")(sequelize, Sequelize);
+db.customer = require("./customer.model.js")(sequelize, Sequelize);
 db.trip = require("./trip.model.js")(sequelize, Sequelize);
 
 // foreign key for session
@@ -61,17 +61,8 @@ db.day.belongsTo(
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 
-// foreign key for sites
-db.day.hasMany(
-  db.site,
-  { as: "site" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-db.site.belongsTo(
-  db.day,
-  { as: "day" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
+// foreign key for customers
+
 
 // foreign keys for hotels
 db.day.belongsTo(
@@ -129,22 +120,11 @@ db.day.hasMany(
   { as: "daysite" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
-db.site.hasMany(
-  db.daysite,
-  { as: "daysite" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
 db.daysite.belongsTo(
   db.day,
   { as: "day" },
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
-db.daysite.belongsTo(
-  db.site,
-  { as: "site" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
-);
-
 
 
 module.exports = db;
