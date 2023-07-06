@@ -40,9 +40,6 @@ exports.create = (req, res) => {
 // Find all Customers
 exports.findAll = (req, res) => {
   Customer.findAll({
-    order: [
-      ["city", "ASC"],
-    ],
   })
     .then((data) => {
       if (data) {
