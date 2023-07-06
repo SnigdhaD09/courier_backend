@@ -23,6 +23,7 @@ db.hotel = require("./hotel.model.js")(sequelize, Sequelize);
 db.registration = require("./registration.model.js")(sequelize, Sequelize);
 db.favorite = require("./favorite.model.js")(sequelize, Sequelize);
 db.customer = require("./customer.model.js")(sequelize, Sequelize);
+db.cost = require("./cost.model.js")(sequelize, Sequelize);
 db.trip = require("./trip.model.js")(sequelize, Sequelize);
 
 // foreign key for session
