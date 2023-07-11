@@ -1,0 +1,25 @@
+module.exports = (app) => {
+  const Delivery = require("../controllers/delivery.controller.js");
+  const { authenticateRoute } = require("../authentication/authentication.js");
+  var router = require("express").Router();
+
+  // Create a new Delivery
+  router.post("/deliveries/", [authenticateRoute], Delivery.create);
+
+  // Retrieve all Deliverys
+  router.get("/deliveries", Delivery.findAll);
+
+  // Retrieve a single Delivery with id
+  router.get("/deliveries/:id", Delivery.findOne);
+
+  // Update a Delivery with id
+  router.put("/deliveries/:id", [authenticateRoute], Delivery.update);
+
+  // Delete a Delivery with id
+  router.delete("/deliveries/:id", [authenticateRoute], Delivery.delete);
+
+  // Delete all deliveries
+  router.delete("/deliveries/", [authenticateRoute], Delivery.deleteAll);
+
+  app.use("/courierapi", router);
+};
