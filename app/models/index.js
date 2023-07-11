@@ -48,9 +48,8 @@ db.trip.belongsTo(
 
 // foreign keys for daysites
 
-db.customer.hasOne(db.delivery, {as: "deliveryorigin", foreignKey: "originCustomerId"});
-db.customer.hasOne(db.delivery, {as: "deliverydestination", foreignKey: "destinationCustomerId"});
-
+db.delivery.belongsTo(db.customer, {as: "originCustomer"});
+db.delivery.belongsTo(db.customer, {as: "destinationCustomer"});
 db.delivery.belongsTo(db.trip);
 
 module.exports = db;

@@ -1,5 +1,6 @@
 const db = require("../models");
 const Delivery = db.delivery;
+const Customer = db.customer;
 // Create and Save a new Delivery
 exports.create = (req, res) => {
   // Validate request
@@ -25,7 +26,7 @@ exports.create = (req, res) => {
     return;
   } else if (req.body.blocksEstimate === undefined) {
     res.status(400).send({
-      message: `Blocks Estimate Date cannot be empty for delivery!`,
+      message: `Blocks Estimate cannot be empty for delivery!`,
     });
     return;
   } else if (req.body.status === undefined) {
@@ -47,7 +48,6 @@ exports.create = (req, res) => {
     status: req.body.status,
     chargeEstimate: req.body.chargeEstimate,
   };
-  console.log(delivery);
   // Save Delivery in the database
   Delivery.create(delivery)
     .then((data) => {
@@ -65,8 +65,20 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   const userId = req.params.userId;
   Delivery.findAll({
+    include: [
+      {
+        model: Customer,
+        as: "originCustomer",
+        required: false,
+      },
+      {
+        model: Customer,
+        as: "destinationCustomer",
+        required: false,
+      }
+    ],
     order: [
-      ["deliveryName", "ASC"],
+      ["updatedAt", "DESC"],
     ],
   })
     .then((data) => {
