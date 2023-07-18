@@ -148,6 +148,41 @@ exports.update = (req, res) => {
       });
     });
 };
+// Update a Delivery with the status in the request
+exports.statusUpdate = (req, res) => {
+  const id = req.params.id;
+  const newDelivery = req.body.newDelivery;
+  const newTrip = req.body.newTrip;
+  Delivery.update(newDelivery, {
+    where: { id: id },
+  })
+    .then((number) => {
+      if (number == 1) {
+        Trip.update(newTrip, {
+          where: { deliveryId: id },
+        })
+          .then((data) => {
+              res.send({
+                message: "Trip was updated successfully.",
+              });
+            }).catch((err) => {
+              res.status(500).send({
+                message: err.message || "Error updating Trip with deliveryId=" + id,
+              });
+            });
+      } else {
+        res.send({
+          message: `Cannot update Delivery with id=${id}. Maybe Delivery was not found or req.body is empty!`,
+        });
+      }    
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Error updating Delivery with id=" + id,
+      });
+    });
+};
+
 // Delete a Delivery with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;

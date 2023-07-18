@@ -15,6 +15,9 @@ module.exports = (app) => {
   // Update a Delivery with id
   router.put("/deliveries/:id", [authenticateRoute], Delivery.update);
 
+  // Update a Delivery with status
+  router.put("/deliveries/:id/status", [authenticateRoute], Delivery.statusUpdate);
+
   // Assign a courier to a delivery - create update a trip
   router.put("/deliveries/:deliveryId/assigncourier/:courierId", [authenticateRoute], Delivery.assignCourier);
 
