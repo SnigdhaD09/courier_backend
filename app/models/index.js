@@ -34,22 +34,13 @@ db.session.belongsTo(
   { foreignKey: { allowNull: false }, onDelete: "CASCADE" }
 );
 
-// foreign key for trip
-db.user.hasMany(
-  db.trip,
-  { as: "trip" },
-  { foreignKey: { allowNull: false }, onDelete: "CASCADE" });
-db.trip.belongsTo(
-  db.user,
-  { as: "user" },
-  { foreignKey: { allowNull: true }, onDelete: "CASCADE" }
-);
-
-
 // foreign keys for daysites
 
 db.delivery.belongsTo(db.customer, {as: "originCustomer"});
 db.delivery.belongsTo(db.customer, {as: "destinationCustomer"});
 db.delivery.belongsTo(db.trip);
+
+db.trip.belongsTo(db.user, {as: "assignedCourier"});
+db.trip.belongsTo(db.delivery, {as: "delivery"});
 
 module.exports = db;

@@ -10,45 +10,24 @@ const Hotel = db.hotel;
 const DaySite = db.daysite;
 const Op = db.Sequelize.Op;
 // Create and Save a new Trip
-exports.create = (req, res) => {
+exports.create = (deliveryId, assignedCourierId, res) => {
   // Validate request
-  if (req.body.tripTitle === undefined) {
+  if (req.body.assignedCourierId === undefined) {
     res.status(400).send({
-      message: `Title cannot be empty for trip!`,
+      message: `Assigned Courier cannot be empty for trip!`,
     });
     return;
-  } else if (req.body.startdate === undefined) {
+  } else if (req.body.deliveryId === undefined) {
     res.status(400).send({
-      message: `Start Date cannot be empty for trip!`,
+      message: `DeliveryId cannot be empty for trip!`,
     });
     return;
-  } else if (req.body.enddate === undefined) {
-    res.status(400).send({
-      message: `End Date cannot be empty for trip!`,
-    });
-    return;
-  } else if (req.body.tripDescription === undefined) {
-    res.status(400).send({
-      message: `Description cannot be empty for trip!`,
-    });
-    return;
-  } else if (req.body.tripDestination === undefined) {
-    res.status(400).send({
-      message: `Destination cannot be empty for trip!`,
-    });
-    return;
-  } else if (req.body.isArchived === undefined) {
-    req.body.isArchived = false;
   } 
 
   // Create a Trip
   const trip = {
-    tripTitle: req.body.tripTitle,
-    startdate: req.body.startdate,
-    enddate: req.body.enddate,
-    tripDescription: req.body.tripDescription,
-    tripDestination: req.body.tripDestination,
-    isArchived: req.body.isArchived,
+    deliveryId: deliveryId,
+    assignedCourierId: assignedCourierId,
   };
   // Save Trip in the database
   Trip.create(trip)
@@ -593,7 +572,7 @@ The Trip System<br>
           // console.log(personalizations);
           // EmailController.triggerSendPersonalized(personalizations, body);
           for(let i=0; i< userEmails.length; i++){
-            EmailController.triggerSend(userEmails[i], sub, body);            
+            // EmailController.triggerSend(userEmails[i], sub, body);            
           }
         });
        
