@@ -1,6 +1,7 @@
 const db = require("../models");
 const Delivery = db.delivery;
 const Customer = db.customer;
+const Trip = db.trip;
 // Create and Save a new Delivery
 exports.create = (req, res) => {
   // Validate request
@@ -75,7 +76,12 @@ exports.findAll = (req, res) => {
         model: Customer,
         as: "destinationCustomer",
         required: false,
-      }
+      },
+      {
+        model: Trip,
+        as: "trip",
+        required: false,
+      },
     ],
     order: [
       ["updatedAt", "DESC"],
@@ -178,6 +184,67 @@ exports.deleteAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while removing all deliveries.",
+      });
+    });
+};
+
+// Assign a Courier to a Delivery
+exports.assignCourier = (req, res) => {
+  const id = req.params.deliveryId;
+  const assignedCourierId = req.params.courierId;
+  Trip.findOne({
+    where: { deliveryId: id },
+  })
+    .then((data) => {
+
+      var newTrip = {};
+      if (data) {
+        newTrip = data.dataValues;
+        newTrip.assignedCourierId = assignedCourierId;
+        //Found trip, so update
+        return Trip.update(newTrip, {
+                  where: { deliveryId: newTrip.deliveryId },
+                })
+                .then((data) => {
+                  res.send(data);
+                })
+                .catch((err) => {
+                  res.status(500).send({
+                    message:
+                      err.message || "Some error occurred while updating the Trip.",
+                  });
+                });;     
+      } else {
+        //Trip not found, create one
+        newTrip = {
+          deliveryId: id,
+          assignedCourierId: assignedCourierId,
+        };
+        return Trip.create(newTrip)
+                .then((data) => {
+                  console.log(data);
+                  Delivery.update({tripId: data.dataValues.id}, {where: {id: id}})
+                  .then((data) => {
+                    res.send(data);
+                  })
+                  .catch((err) => {
+                    res.status(500).send({
+                      message:
+                        err.message || "Some error occurred while updating tripId in Delivery.",
+                    });
+                  });;     
+                })
+                .catch((err) => {
+                  res.status(500).send({
+                    message:
+                      err.message || "Some error occurred while creating the Trip.",
+                  });
+                });;
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Error retrieving Delivery with id=" + id,
       });
     });
 };
