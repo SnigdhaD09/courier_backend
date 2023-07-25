@@ -8,7 +8,13 @@ module.exports = (app) => {
 
   // Retrieve all Customers
   router.get("/customers", Customer.findAll);
-
+  
+  // Retrieve all Start Nodes
+  router.get("/customers/startnodes", Customer.findAllStartNodes);
+  
+  // Retrieve pickup route
+  router.post("/customers/route", Customer.findRoute);
+  
   // Retrieve a single Customer with id
   router.get("/customers/:id", Customer.findOne);
 
