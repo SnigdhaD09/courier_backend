@@ -16,13 +16,12 @@ db.sequelize = sequelize;
 
 db.session = require("./session.model.js")(sequelize, Sequelize);
 db.user = require("./user.model.js")(sequelize, Sequelize);
-
+db.street = require("./street.model.js")(sequelize, Sequelize);
 db.delivery = require("./delivery.model.js")(sequelize, Sequelize);
 db.customer = require("./customer.model.js")(sequelize, Sequelize);
 db.cost = require("./cost.model.js")(sequelize, Sequelize);
 db.trip = require("./trip.model.js")(sequelize, Sequelize);
 db.inputMap = require("./inputmap.model.js")(sequelize, Sequelize);
-db.street = require("./street.model.js")(sequelize, Sequelize);
 
 // foreign key for session
 db.user.hasMany(
