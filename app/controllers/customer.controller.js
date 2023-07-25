@@ -1,6 +1,8 @@
 const db = require("../models");
 const Customer = db.customer;
 const Op = db.Sequelize.Op;
+const Sequelize = require("sequelize");
+
 // Create and Save a new Customer
 exports.create = (req, res) => {
   // Validate request
@@ -27,6 +29,7 @@ exports.create = (req, res) => {
   // Save Customer in the database
   Customer.create(customer)
     .then((data) => {
+      createRoutes();
       res.send(data);
     })
     .catch((err) => {
@@ -54,6 +57,55 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Error retrieving Customers.",
+      });
+    });
+};
+
+// Find all Start Nodes
+exports.findAllStartNodes = (req, res) => {
+  db.inputMap.findAll({
+    attributes: [
+      [Sequelize.fn('DISTINCT', Sequelize.col('startNode')) ,'startNode'],
+    ]
+  })
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Locations.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Error retrieving Customers.",
+      });
+    });
+};
+
+// Find Route
+exports.findRoute = (req, res) => {
+  db.inputMap.findOne({
+    attributes: [
+      'route', 'numOfBlocks'
+    ],
+    where: req.body,
+  })
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Route.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Error retrieving route.",
       });
     });
 };

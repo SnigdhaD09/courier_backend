@@ -32,7 +32,7 @@ require("./app/routes/delivery.routes")(app);
 require("./app/routes/customer.routes")(app);
 require("./app/routes/cost.routes")(app);
 require("./app/routes/trip.routes")(app);
-require("./app/routes/day.routes")(app);
+require("./app/routes/inputMap.routes")(app);
 require("./app/routes/daySite.routes")(app);
 require("./app/routes/user.routes")(app);
 
