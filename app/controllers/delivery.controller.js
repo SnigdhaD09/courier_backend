@@ -2,6 +2,7 @@ const db = require("../models");
 const Delivery = db.delivery;
 const Customer = db.customer;
 const Trip = db.trip;
+const InputMap = db.inputMap;
 // Create and Save a new Delivery
 exports.create = (req, res) => {
   // Validate request
@@ -25,18 +26,8 @@ exports.create = (req, res) => {
       message: `Delivery Time cannot be empty for delivery!`,
     });
     return;
-  } else if (req.body.blocksEstimate === undefined) {
-    res.status(400).send({
-      message: `Blocks Estimate cannot be empty for delivery!`,
-    });
-    return;
-  } else if (req.body.status === undefined) {
+  }  else if (req.body.status === undefined) {
     req.body.status = 'Pending Pickup';
-  } else if (req.body.chargeEstimate === undefined) {
-    res.status(400).send({
-      message: `Charge Estimate cannot be empty for delivery!`,
-    });
-    return;
   }
 
   // Create a Delivery
@@ -49,17 +40,51 @@ exports.create = (req, res) => {
     status: req.body.status,
     chargeEstimate: req.body.chargeEstimate,
   };
-  // Save Delivery in the database
-  Delivery.create(delivery)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
+
+  Customer.findOne({
+    where: {id: req.body.originCustomerId}
+  }).then((originCustomerData)=> {
+    Customer.findOne({
+      where: {id: req.body.destinationCustomerId}
+    }).then((destinationCustomerData)=> {
+      InputMap.findOne({
+        where: {
+          startNode: originCustomerData.dataValues.location,
+          endNode: destinationCustomerData.dataValues.location,
+        }
+      }).then((data)=>{
+        delivery.blocksEstimate = data.dataValues.numOfBlocks;
+        delivery.chargeEstimate = delivery.blocksEstimate * 1.5;
+        // Save Delivery in the database
+        Delivery.create(delivery)
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the Delivery.",
+          });
+        });
+
+      }).catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while fetching Map info.",
+        });
+      });  
+    }).catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while fetching destination customer info.",
+        });
+      });  
+  }).catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Delivery.",
+          err.message || "Some error occurred while fetching origin customer info.",
       });
-    });
+    });  
 };
 
 // Find all Deliveries
