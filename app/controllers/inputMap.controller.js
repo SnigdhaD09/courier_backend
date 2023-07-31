@@ -267,7 +267,7 @@ async function doCreate(){
         startNode: startNode,
         endNode: endNode,
         route:JSON.stringify(route),
-        numOfBlocks: route.length
+        numOfBlocks: (route.length - 1)
       });
     }
   }
@@ -278,6 +278,7 @@ function createInputMap(intersections){
   var inputMap = {};
   for(var i=0;i<intersections.length;i++){
     var intersection = intersections[i];
+    //2nd Ave and B Street
     var letter = parseInt(intersection.streetName.charCodeAt(12));
     var number = parseInt(intersection.streetName.charAt(0));
     // if(letter != 66 || (number != 1 && number != 2) ){
