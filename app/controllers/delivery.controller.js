@@ -134,6 +134,23 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
   Delivery.findOne({
     where: { id: id },
+    include: [
+      {
+        model: Customer,
+        as: "originCustomer",
+        required: false,
+      },
+      {
+        model: Customer,
+        as: "destinationCustomer",
+        required: false,
+      },
+      {
+        model: Trip,
+        as: "trip",
+        required: false,
+      },
+    ],
   })
     .then((data) => {
       if (data) {
