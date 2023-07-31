@@ -1,6 +1,7 @@
 const db = require("../models");
 const Delivery = db.delivery;
 const Customer = db.customer;
+const Cost = db.cost;
 const Trip = db.trip;
 const User = db.user;
 const InputMap = db.inputMap;
@@ -54,17 +55,29 @@ exports.create = (req, res) => {
           endNode: destinationCustomerData.dataValues.location,
         }
       }).then((data)=>{
-        delivery.blocksEstimate = data.dataValues.numOfBlocks;
-        delivery.chargeEstimate = delivery.blocksEstimate * 1.5;
-        // Save Delivery in the database
-        Delivery.create(delivery)
-        .then((data) => {
-          res.send(data);
+        Cost.findOne({
+          where: {
+            name: 'Price per Block',
+          }
+        }).then((costData)=>{
+          delivery.blocksEstimate = data.dataValues.numOfBlocks;
+          delivery.chargeEstimate = delivery.blocksEstimate * parseFloat(costData.dataValues.price);
+          // Save Delivery in the database
+          Delivery.create(delivery)
+          .then((data) => {
+            res.send(data);
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the Delivery.",
+            });
+          });
         })
         .catch((err) => {
           res.status(500).send({
             message:
-              err.message || "Some error occurred while creating the Delivery.",
+              err.message || "Some error occurred while fetching costs.",
           });
         });
 
