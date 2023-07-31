@@ -129,6 +129,52 @@ exports.findAll = (req, res) => {
     });
 };
 
+
+// Find all Deliveries
+exports.findAllByCustomer = (req, res) => {
+  const customerId = req.params.customerId;
+  Delivery.findAll({
+    where: {
+      originCustomerId: customerId
+    },
+    include: [
+      {
+        model: Customer,
+        as: "originCustomer",
+        required: false,
+      },
+      {
+        model: Customer,
+        as: "destinationCustomer",
+        required: false,
+      },
+      {
+        model: Trip,
+        as: "trip",
+        required: false,
+      },
+    ],
+    order: [
+      ["updatedAt", "DESC"],
+    ],
+  })
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Deliveries by Customer.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Error retrieving Deliveries by Customer.",
+      });
+    });
+};
+
 // Find a single Delivery with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
