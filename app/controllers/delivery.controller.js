@@ -2,6 +2,7 @@ const db = require("../models");
 const Delivery = db.delivery;
 const Customer = db.customer;
 const Trip = db.trip;
+const User = db.user;
 const InputMap = db.inputMap;
 // Create and Save a new Delivery
 exports.create = (req, res) => {
@@ -171,6 +172,56 @@ exports.findAllByCustomer = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Error retrieving Deliveries by Customer.",
+      });
+    });
+};
+
+// Find all Deliveries
+exports.findAllByCourier = (req, res) => {
+  const courierId = req.params.courierId;
+  Delivery.findAll({
+    where: {
+      '$trip.assignedCourierId$': courierId
+    },
+    include: [
+      {
+        model: Customer,
+        as: "originCustomer",
+        required: false,
+      },
+      {
+        model: Customer,
+        as: "destinationCustomer",
+        required: false,
+      },
+      {
+        model: Trip,
+        as: "trip",
+        required: false,
+        include: {
+          model: User,
+          as: "assignedCourier",
+          required: false,
+        },
+      },      
+    ],
+    order: [
+      ["updatedAt", "DESC"],
+    ],
+  })
+    .then((data) => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Deliveries by Courier.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Error retrieving Deliveries by Courier.",
       });
     });
 };
