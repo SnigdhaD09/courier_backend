@@ -9,6 +9,9 @@ module.exports = (app) => {
   // Retrieve all Deliverys
   router.get("/deliveries", Delivery.findAll);
 
+  // Retrieve all Deliverys by customer
+  router.get("/deliveries/customer/:customerId", Delivery.findAllByCustomer);
+
   // Retrieve a single Delivery with id
   router.get("/deliveries/:id", Delivery.findOne);
 
