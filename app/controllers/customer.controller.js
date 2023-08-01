@@ -29,7 +29,7 @@ exports.create = (req, res) => {
   // Save Customer in the database
   Customer.create(customer)
     .then((data) => {
-      createRoutes();
+      // createRoutes();
       res.send(data);
     })
     .catch((err) => {
